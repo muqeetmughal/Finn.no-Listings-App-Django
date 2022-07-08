@@ -1,0 +1,78 @@
+{% extends "base.html" %}
+{% block body %}
+{% include 'navbar.html' %}
+
+
+<style>
+
+a.paginate_button {
+    background-color: lavender;
+}
+body {
+    margin-top: 5%;
+}
+</style>
+<script>
+      $(document).ready( function () {
+        $('#example').DataTable();
+      });
+
+
+  </script>
+<div class="container">
+    <div class="row">
+        <table id="example" class="display" style="width: 100%">
+            <thead>
+                <tr class="bg-info">
+                    <th>Code</th>
+                    <th>Title</th>
+                    <th>Model</th>
+                    <th>Price</th>
+                    <th>Engine</th>
+                    <th>State</th>
+                    <th>Location</th>
+                    {% comment %} <th>Image</th> {% endcomment %}
+                    <th>Link</th>
+                    <th>View</th>
+                    <th>Status</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in data %}
+                <tr>
+                    <td>{{item.finn_code}}</td>
+                    <td>{{item.title}}</td>
+                    <td>{{item.Model}}</td>
+                    <td>{{item.orignal_price}}</td>
+                    <td>{{item.Engine_Included}}</td>
+                    <td>{{item.State}}</td>
+                    <td>{{item.Boat_location}}</td>
+                    {% comment %} <td>
+                        <img style="width: 50px; height: 50px" src="{{item.image}}" alt="" />
+                    </td> {% endcomment %}
+                    <td>
+                        <a class="text-center" href="{{item.url}}" target="_blank"><i class="fas fa-link"></i></a>
+                    </td>
+                    <td>
+                        <a class="text-center" href="/detail/{{item.finn_code}}" target="_blank"><i class="fa fa-eye" aria-hidden="true"></i></a>
+                    </td>
+                    {% if "Utløpt" in item.status %}
+                    <td><span class="badge badge-danger">{{item.status}}</span></td>
+                    {% endif %}
+                    {% if "Active" in item.status %}
+                    <td><span class="badge badge-success">{{item.status}}</span></td>
+                    {% endif %}
+                    {% if "Sold" in item.status %}
+                    <td><span class="badge badge-warning">{{item.status}}</span></td>
+                    {% endif %}
+                    <td><a class="btn btn-danger delete-button" href="delete/{{item.finn_code}}"><i class="far fa-trash-alt"></i></a></td>
+
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+{% endblock body %}

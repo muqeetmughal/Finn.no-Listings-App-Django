@@ -1,0 +1,105 @@
+{% extends "base.html" %}
+{% block body %}
+{% include 'navbar.html' %}
+
+
+<style>
+    a.paginate_button {
+        background-color: lavender;
+    }
+
+    body {
+        margin-top: 5%;
+    }
+</style>
+<div class="container">
+{{ request.get_full_path }}
+    <form method-"get">
+    {{ myfilter.form }}
+    <button class="btn btn-primary" type="submit">Search</button>
+    </form>
+    <div class="row">
+
+        <table id="example" class="table table-hover" style="width: 100%">
+            <thead>
+                <tr class="bg-info">
+                    <th>Code</th>
+                    <th>Title</th>
+                    <th>Model</th>
+                    <th>Price</th>
+                    <th>Engine</th>
+                    <th>State</th>
+                    <th>Location</th>
+                    <th>Link</th>
+                    <th>View</th>
+                    <th>Status</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in page.object_list %}
+                <tr>
+                    <td>{{item.finn_code}}</td>
+                    <td>{{item.title}}</td>
+                    <td>{{item.Model}}</td>
+                    <td>{{item.orignal_price}}</td>
+                    <td>{{item.Engine_Included}}</td>
+                    <td>{{item.State}}</td>
+                    <td>{{item.Boat_location}}</td>
+                    {% comment %} <td>
+                        <img style="width: 50px; height: 50px" src="{{item.image}}" alt="" />
+                    </td> {% endcomment %}
+                    <td>
+                        <a class="text-center" href="{{item.url}}" target="_blank"><i class="fas fa-link"></i></a>
+                    </td>
+                    <td>
+                        <a class="text-center" href="/detail/{{item.finn_code}}" target="_blank"><i class="fa fa-eye"
+                                aria-hidden="true"></i></a>
+                    </td>
+                    {% if "Utløpt" in item.status %}
+                    <td><span class="badge badge-danger">{{item.status}}</span></td>
+                    {% endif %}
+                    {% if "Active" in item.status %}
+                    <td><span class="badge badge-success">{{item.status}}</span></td>
+                    {% endif %}
+                    {% if "Sold" in item.status %}
+                    <td><span class="badge badge-warning">{{item.status}}</span></td>
+                    {% endif %}
+                    <td><a class="btn btn-danger delete-button" href="delete/{{item.finn_code}}"><i
+                                class="far fa-trash-alt"></i></a></td>
+
+                </tr>
+                {% endfor %}
+            </tbody>
+            
+
+        </table>
+        <nav aria-label="Page navigation example">
+            <ul class="pagination justify-content-end">
+                {% if page.has_previous %}
+                <li class="page-item">
+                    <a class="page-link" href={% url 'home' %}?page={{page.previous_page_number}}>Previous</a>
+                </li>
+                {% else %}
+                <li class="page-item disabled">
+                    <a class="page-link" tabindex="-1" aria-disabled="true">Previous</a>
+                </li>
+                {% endif %}
+                <li class="page-item">
+                    <a class="page-link" href={% url 'home' %}?page={{page.number}}>{{page.number}}</a>
+                </li>
+                {% if page.has_next %}
+                <li class="page-item">
+                    <a class="page-link" href={% url 'home' %}?page={{page.next_page_number}}>Next</a>
+                </li>
+                {% else %}
+                <li class="page-item disabled">
+                    <a class="page-link" tabindex="-1" aria-disabled="true">Next</a>
+                </li>
+                {% endif %}
+            </ul>
+        </nav>
+    </div>
+</div>
+
+{% endblock body %}

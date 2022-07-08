@@ -1,0 +1,161 @@
+{% extends "base.html" %}
+
+
+{% block body %}
+{% include 'navbar.html' %}
+<script>
+$(function () {
+    $("div.d-flex").prepend(
+      '<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">Filters</button>'
+    );
+    $("div.d-flex").prepend(
+      '<a type="button" class="btn btn-info" href="/todayscrape">Scrape Today Data</a>'
+    );
+    $("div.d-flex").prepend(
+      '<span>Total Number listings: <strong>{{count}}</strong></span>'
+    );
+  });
+
+</script>
+<div class="container">
+    
+    <div class="row">
+        <table id="example" class="table table-hover" style="width: 100%; margin-top:6%;">
+            <thead>
+                <tr class="bg-info">
+                    <th>Code</th>
+                    <th>Title</th>
+                    <th>Model</th>
+                    <th>Price</th>
+                    <th>Engine</th>
+                    <th>State</th>
+                    <th>Location</th>
+                    <th>Link</th>
+                    <th>View</th>
+                    <th>Status</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in page.object_list %}
+                <tr>
+                    <td>{{item.finn_code}}</td>
+                    <td>{{item.title}}</td>
+                    <td>{{item.Model}}</td>
+                    <td>{{item.orignal_price}}</td>
+                    <td>{{item.Engine_Included}}</td>
+                    <td>{{item.State}}</td>
+                    <td>{{item.Boat_location}}</td>
+                    {% comment %} <td>
+                        <img style="width: 50px; height: 50px" src="{{item.image}}" alt="" />
+                    </td> {% endcomment %}
+                    <td>
+                        <a class="text-center" href="{{item.url}}" target="_blank"><i class="fas fa-link"></i></a>
+                    </td>
+                    <td>
+                        <a class="text-center" href="/detail/{{item.finn_code}}" target="_blank"><i class="fa fa-eye"
+                                aria-hidden="true"></i></a>
+                    </td>
+                    {% if "Utløpt" in item.status %}
+                    <td><span class="badge bg-danger">{{item.status}}</span></td>
+                    {% elif "Active" in item.status %}
+                    <td><span class="badge bg-success">{{item.status}}</span></td>
+                    {% elif "Sold" in item.status %}
+                    <td><span class="badge bg-warning">{{item.status}}</span></td>
+                    {% else %}
+                    <td><span class="badge bg-secondary">N/A</span></td>
+                    {% endif %}
+                    <td><a href="delete/{{item.finn_code}}"><i class="text-danger font-weight-bold text-center far fa-trash-alt"></i></a></td>
+
+                </tr>
+                {% endfor %}
+            </tbody>
+            
+
+        </table>
+
+        
+        <nav aria-label="Page navigation example">
+            <ul class="pagination justify-content-end">
+                    <li class="page-item">
+                            <a class="page-link" data-page=1 href="/?page=1"><i class="fas fa-angle-double-left"></i></a>
+                    </li>
+                    {% if page.has_previous %}
+                        <li class="page-item">
+                            <a class="page-link" data-page={{page.previous_page_number}} href="/?page={{page.previous_page_number}}"><i class="fas fa-chevron-left"></i></a>
+                        </li>
+                    {% endif %}
+
+                    {% for i in page.paginator.page_range %}
+                        {% if page.number == i %}
+                        <li class="page-item active">
+                            <a class="page-link" data-page={{i}} href="?page={{i}}">{{i}}</a>
+                        </li>
+
+                        
+                        {% elif i > page.number|add:'-3' and i < page.number|add:"3" %}
+                        <li class="page-item">
+                            <a class="page-link numbers" data-page={{i}} href="?page={{i}}">{{i}}</a>
+                        </li>
+                        {% endif %}
+                    {% endfor %}
+
+                    
+                    {% if page.has_next %}
+                        <li class="page-item">
+                            <a class="page-link" data-page={{page.next_page_number}} href="/?page={{page.next_page_number}}"><i class="fas fa-chevron-right"></i></a>
+                        </li>
+                    {% endif %}
+                    <li class="page-item">
+                            <a class="page-link" data-page={{page.paginator.num_pages}} href="/?page={{page.paginator.num_pages}}"><i class="fas fa-angle-double-right"></i></a>
+                    </li>
+            </ul>
+        </nav>
+    </div>
+</div>
+<!-- Button trigger modal -->
+
+
+<!-- Modal -->
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<form id="searchForm" method-"GET">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Apply Filters</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+
+      {{myfilter.form.as_p}}
+            
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        <button class="btn btn-primary" type="submit">Search</button>
+      </div>
+    </div>
+  </div>
+  </form>
+</div>
+
+<script>
+
+let searchForm = document.getElementById('searchForm')
+let pageLinks = document.getElementsByClassName('page-link')
+
+for(var i=0; pageLinks.length>i; i++){
+    pageLinks[i].addEventListener('click',function(e){
+        e.preventDefault()
+        let page = this.dataset.page
+        console.log('Page:',page)
+        searchForm.innerHTML += `<input value="${page}" name="page" hidden>`
+        searchForm.submit()
+    })
+    
+}
+
+</script>
+
+
+{% endblock body %}

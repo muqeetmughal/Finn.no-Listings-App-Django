@@ -1,0 +1,1 @@
+from finn.wsgi import application
