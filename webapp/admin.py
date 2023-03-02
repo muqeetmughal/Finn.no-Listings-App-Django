@@ -8,15 +8,15 @@ class PriceHistoryAdmin(admin.TabularInline):
     model = Price_History
 
 class ListingAdmin(ImportExportMixin,admin.ModelAdmin):
-    list_display = ('title','image_tag','finn_code', 'Model','State',
+    list_display = ('title','finn_code', 'Model','State',
                     'orignal_price', 'phone_number','link_url' ,'status_tag')
     search_fields = ['finn_code', 'title', 'description','status', ]
 
-    list_filter = ('status','Boat_location','State','Type','Brand','Model','Model_Year','Engine_Included','Engine_Manufacturer','Engine_Type','Color','Sleeps','Seating')
+    list_filter = ('status','Boat_location','State','Type','Brand','Model_Year','Engine_Included','Engine_Type','Color','Sleeps','Seating')
 
     list_per_page = 15
 
-    readonly_fields = ["finn_code","status","orignal_price","url"]
+    readonly_fields = ["finn_code","status","url"]
 
     inlines = [
         PriceHistoryAdmin,
@@ -28,7 +28,7 @@ class ListingAdmin(ImportExportMixin,admin.ModelAdmin):
 
     def image_tag(self, obj):
         return format_html(f"""\
-        <img src="{obj.image}" width="auto" height="50"/>\
+        <img src="{obj.image}" width="auto" height="100"/>\
             <div id="myModal" class="modal">
 
             <span class="close">&times;</span>
@@ -49,7 +49,7 @@ class ListingAdmin(ImportExportMixin,admin.ModelAdmin):
         elif obj.status == "Expired":
             status_class = "expired"
         elif obj.status == "Inaktiv":
-            status_class = "expired"
+            status_class = "inactive"
 
 
         

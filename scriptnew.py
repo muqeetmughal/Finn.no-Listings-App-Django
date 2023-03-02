@@ -352,6 +352,7 @@ class FinnScraper:
         
 
 if __name__ == "__main__":
+    
     finn = FinnScraper()
     # finn.scrape_single_listing("https://www.finn.no/boat/forsale/ad.html?finnkode=263049309")
     finn.scrape_data()

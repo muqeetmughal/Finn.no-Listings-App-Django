@@ -1,13 +1,9 @@
 
 from django.urls import path,include
 from .views import *
+from rest_framework import routers
+router = routers.DefaultRouter()
 
-urlpatterns = [
-    path('',apiOverview),
-    path('listings/',listings),
-    path('detail/<int:code>/', detail),
-    path('delete/<int:code>/', delete),
-    path('today/', start_scraper),
-	path('old/', old_scraper),
-    path('export/', export_to_csv),
-]
+router.register(r'listings', ListingViewSet)
+router.register(r'history', PriceHistoryViewSet)
+urlpatterns = router.urls

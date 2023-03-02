@@ -25,3 +25,10 @@
     border-radius: 10px;
     text-align: center;
 }
+.inactive {
+    background: rgb(4, 0, 255);
+    color: white;
+    padding: 3px 10px;
+    border-radius: 10px;
+    text-align: center;
+}
