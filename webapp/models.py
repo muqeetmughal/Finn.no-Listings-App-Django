@@ -3,8 +3,8 @@ from django.db import models
 # Create your models here.
 
 class Price_History(models.Model):
-    listing = models.ForeignKey("Listing", on_delete=models.CASCADE,related_name='history')
-    changed_price = models.CharField(null=True,max_length=100,blank=True)
+    listing = models.ForeignKey("Listing", on_delete=models.CASCADE,related_name='history', db_index=True)
+    changed_price = models.FloatField(null=True,blank=True)
     price_changed_date = models.CharField(null=True,max_length=100,blank=True)
     def __str__(self):
         return str(self.listing)
@@ -13,7 +13,7 @@ class Price_History(models.Model):
         unique_together = (("listing", "changed_price", "price_changed_date"),)
     
 class Listing(models.Model):
-    finn_code = models.IntegerField(unique=True)
+    finn_code = models.IntegerField(unique=True, db_index=True)
     title = models.TextField(null=True,blank=True)
     description = models.TextField(null=True,max_length=20000,blank=True)
     # definitions_html = models.TextField(null=True,max_length=2000,blank=True)
@@ -38,7 +38,7 @@ class Listing(models.Model):
     Color = models.CharField(null=True,max_length=100,blank=True)
     Seating = models.CharField(null=True,max_length=5,blank=True)
     Sleeps= models.CharField(null=True,max_length=5,blank=True)
-    orignal_price = models.BigIntegerField(null=True,blank=True)
+    orignal_price = models.FloatField(null=True,blank=True)
     last_changed = models.CharField(null=True,max_length=100,blank=True)
     contact_name = models.CharField(null=True,max_length=100,blank=True)
     phone_number = models.CharField(null=True,max_length=100,blank=True)
@@ -50,3 +50,23 @@ class Listing(models.Model):
     
     def __str__(self):
         return str(self.finn_code)
+
+    @property
+    def current_price_property(self):
+        orignal_price = self.orignal_price
+        last_price_change = self.history.filter().order_by('-id').first()
+        if last_price_change:
+            changed_price = last_price_change.changed_price
+            if changed_price > orignal_price:
+                color = "red"
+            elif changed_price < orignal_price:
+                color = "green"
+            else:
+                color = "yellow"
+            
+            return f"<span style='color:{color}'>{str(changed_price)}</span>"
+            
+
+
+        else:
+            return str(orignal_price)

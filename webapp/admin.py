@@ -1,15 +1,18 @@
 from django.contrib import admin
-from .models import Listing, Price_History
 # Register your models here.
 from django.utils.html import format_html
 from import_export.admin import ImportExportMixin
+
+from .models import Listing, Price_History
+
 
 class PriceHistoryAdmin(admin.TabularInline):
     model = Price_History
 
 class ListingAdmin(ImportExportMixin,admin.ModelAdmin):
-    list_display = ('title','finn_code', 'Model','State',
-                    'orignal_price', 'phone_number','link_url' ,'status_tag')
+    # list_display = ('title','finn_code', 'Model','State',
+    #                 'orignal_price', 'phone_number','link_url' ,'status_tag')
+    list_display = ('title','Brand','Model','orignal_price','current_price','Model_Year','link_url','status_tag', )
     search_fields = ['finn_code', 'title', 'description','status', ]
 
     list_filter = ('status','Boat_location','State','Type','Brand','Model_Year','Engine_Included','Engine_Type','Color','Sleeps','Seating')
@@ -21,6 +24,9 @@ class ListingAdmin(ImportExportMixin,admin.ModelAdmin):
     inlines = [
         PriceHistoryAdmin,
     ]
+
+    def current_price(self, obj):
+        return format_html(obj.current_price_property)
 
     def link_url(self, obj):
         return format_html(f'<a href="{obj.url}" target="_blank"><i class="fas fa-link"></i></a>')
@@ -69,5 +75,5 @@ class ListingAdmin(ImportExportMixin,admin.ModelAdmin):
 
 
 admin.site.register(Listing, ListingAdmin)
-# admin.site.register(Price_History,PriceHistoryAdmin)
+admin.site.register(Price_History)
 # admin.site.register(Definition, DefinitionAdmin)
