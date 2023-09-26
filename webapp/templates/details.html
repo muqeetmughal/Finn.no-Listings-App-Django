@@ -1,0 +1,215 @@
+{% extends "base.html" %} {% block body %} {% include 'navbar.html' %}
+<style>
+.fill {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden
+}
+.fill img {
+    flex-shrink: 0;
+    min-width: 100%;
+    min-height: 100%
+}
+a.btn.btn-dark.ml-3 {
+    display: none;
+}
+</style>
+<script>
+  function closeWindow() {
+    window.top.close();
+  }
+</script>
+<script>
+  $(function () {
+    $("div.d-flex").prepend(
+      '<a class="btn btn-warning" onclick="closeWindow()">Exit</a>'
+    );
+    $("div.d-flex").prepend(
+      '<a class="btn btn-warning ml-3" href={{Details.url}} target="_blank">View Orignal</a>'
+    );
+    $("div.d-flex").prepend(
+      '<a class="btn btn-danger ml-3" href=/delete/{{Details.finn_code}}>Delete</a>'
+    );
+  });
+</script>
+
+<div class="container" style="margin-top: 5.5rem">
+  <div class="row">
+    <div class="col-md-6 col-sm-12 col-lg-4 fill">
+      <img src="{{Details.image}}" width="200px" height="200px" />
+    </div>
+
+    <div class="col-md-6 col-sm-12 col-lg-8">
+      <div class="row">
+        <div class="col-md-3">
+          <label style="
+                  background-color: #feeda0;
+                  padding: 5px;
+                  border-radius: 4px;
+                ">{{Details.Boat_location}}</label><br />
+        </div>
+        <div class="col-md-3">
+          <label>FINN KODE :</label>
+          <h6 style="font-weight: bold; color: black">
+            {{Details.finn_code}}
+          </h6>
+        </div>
+        <div class="col-md-6">
+          <label>Sist endret :</label>
+          <h6 style="font-weight: bold; color: black">
+            {{Details.last_changed}}
+          </h6>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-3">
+          <label>Kontakt Person :</label>
+          <h6 style="font-weight: bold; color: black">
+            {{Details.contact_name}}
+          </h6>
+        </div>
+        <div class="col-md-3">
+          <label>Telefone :</label>
+          <h6 style="font-weight: bold; color: black">
+            {{Details.phone_number}}
+          </h6>
+        </div>
+        <div class="col-md-6">
+          <label>Address :</label>
+          <h6 style="font-weight: bold; color: black">
+            {{Details.address}}
+          </h6>
+        </div>
+        <div class="col-md-6">
+          <label>Pris :</label>
+          <h4 style="font-weight: bold; color: green">
+            {{Details.orignal_price}} Kr
+          </h4>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-md-12">
+          <h4 style="font-weight: bold; color: black">{{Details.title}}</h4>
+        </div>
+      </div>
+    </div>
+  </div>
+  <hr>
+  <div class="row" style="margin-top: 20px">
+    <div class="col-md-2">
+      <label>Båten står i :</label>
+      <h6 style="font-weight: bold; color: maroon">
+        {{Details.Boat_location}}
+      </h6>
+    </div>
+    <div class="col-md-2">
+      <label>Tilstand :</label>
+      <h6 style="font-weight: bold; color: maroon">{{Details.state}}</h6>
+    </div>
+    <div class="col-md-2">
+      <label>Merke :</label>
+      <h6 style="font-weight: bold; color: maroon">{{Details.Brand}}</h6>
+    </div>
+    <div class="col-md-6">
+      <label>Type :</label>
+      <h6 style="font-weight: bold; color: maroon">{{Details.Type}}</h6>
+    </div>
+    <div class="col-md-2">
+      <label>Modell :</label>
+      <h6 style="font-weight: bold; color: maroon">{{Details.Model}}</h6>
+    </div>
+    <div class="col-md-2">
+      <label>Lengde i cm :</label>
+      <h6 style="font-weight: bold; color: maroon">
+        {{Details.Length_cm}}
+      </h6>
+    </div>
+    <div class="col-md-2">
+      <label>Lengde i fot :</label>
+      <h6 style="font-weight: bold; color: maroon">
+        {{Details.Length_Feet}}
+      </h6>
+    </div>
+    <div class="col-md-2">
+      <label>Bredde :</label>
+      <h6 style="font-weight: bold; color: maroon">{{Details.Width}}</h6>
+    </div>
+    <div class="col-md-2">
+      <label>Motor Inkl. :</label>
+      <h6 style="font-weight: bold; color: maroon">
+        {{Details.Engine_Included}}
+      </h6>
+    </div>
+    <div class="col-md-2">
+      <label>Motorfabrikant :</label>
+      <h6 style="font-weight: bold; color: maroon">
+        {{Details.Engine_Manufacturer}}
+      </h6>
+    </div>
+    <div class="col-md-2">
+      <label>Motortype :</label>
+      <h6 style="font-weight: bold; color: maroon">
+        {{Details.Engine_Type}}
+      </h6>
+    </div>
+    <div class="col-md-2">
+      <label>Motorstr. :</label>
+      <h6 style="font-weight: bold; color: maroon">{{Details.Motorstr}}</h6>
+    </div>
+    <div class="col-md-2">
+      <label>Maks fart :</label>
+      <h6 style="font-weight: bold; color: maroon">
+        {{Details.Max_Speed}}
+      </h6>
+    </div>
+    <div class="col-md-2">
+      <label>Drivstoff :</label>
+      <h6 style="font-weight: bold; color: maroon">{{Details.Fuel}}</h6>
+    </div>
+    <div class="col-md-2">
+      <label>Vekt :</label>
+      <h6 style="font-weight: bold; color: maroon">{{Details.Weight}}</h6>
+    </div>
+    <div class="col-md-2">
+      <label>Materiale :</label>
+      <h6 style="font-weight: bold; color: maroon">{{Details.Material}}</h6>
+    </div>
+  </div>
+  <hr>
+  <div class="row">
+    <div class="col-md-12" style="padding: 10px">
+      {{Details.description|safe}}
+    </div>
+  </div>
+  <hr>
+  {% comment %} {% if PriceHistory|length > 0 %} {% endcomment %}
+  <div class="row">
+    <div class="container">
+      <h2>Price History</h2>
+      <table class="table table-hover">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Changed Price</th>
+            <th>Date Changed</th>
+          </tr>
+        </thead>
+        <tbody>
+          {%for price_data in Details.history.all%}
+          <tr>
+            <td>{{ forloop.counter }}</td>
+            <td>{{ price_data.changed_price }}</td>
+            <td>{{ price_data.price_changed_date }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    <br>
+  </div>
+  {% comment %} {% endif %} {% endcomment %}
+</div>
+
+{% endblock body %}

@@ -1,0 +1,75 @@
+version: "3"
+
+services:
+  db:
+    image: postgres
+    ports:
+      - "5433:5433"
+    volumes:
+      - ./db/data:/var/lib/postgresql/data
+    env_file:
+      - .env.local
+  redis:
+    image: redis:6.2-alpine
+    restart: always
+    ports:
+      - "6379:6379"
+    command: redis-server --save 20 1 --loglevel warning
+    volumes:
+      - redis:/data
+  backend:
+    build: .
+    command: >
+      sh -c "python manage.py collectstatic --noinput &&
+             python manage.py wait_for_db &&
+             python manage.py makemigrations &&
+             python manage.py migrate &&
+             python manage.py runserver 0.0.0.0:8000"
+    volumes:
+      - .:/django_app
+    ports:
+      - "8000:8000"
+    env_file:
+      - .env.local
+    depends_on:
+      - db
+      - redis
+  pgadmin:
+    image: dpage/pgadmin4
+    restart: unless-stopped
+    env_file:
+      - .env.local
+    ports:
+      - "5050:80"
+    logging:
+      driver: none
+  celery:
+    restart: unless-stopped
+    build:
+      context: ./
+    command: celery -A finn worker -l info
+    volumes:
+      - .:/django_app
+    env_file:
+      - .env.local
+    depends_on:
+      - backend
+      - db
+      - redis
+
+  celery-beat:
+    restart: unless-stopped
+    build:
+      context: ./
+    command: celery -A finn beat -l info --scheduler django_celery_beat.schedulers:DatabaseScheduler
+    volumes:
+      - ./:/django_app
+    env_file:
+      - .env.local
+    depends_on:
+      - celery
+      - backend
+
+volumes:
+  redis:
+    driver: local

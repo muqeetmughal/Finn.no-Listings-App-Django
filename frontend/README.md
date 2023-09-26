@@ -1,1 +1,0 @@
-# Frontend App for Finn Scraper

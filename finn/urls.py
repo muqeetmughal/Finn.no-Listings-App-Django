@@ -19,6 +19,7 @@ urlpatterns = [
     path('',views.home),
     # path('login/',TemplateView.as_view(template_name='index.html')),
     # path('details/<str:finn_code>',TemplateView.as_view(template_name='index.html')),
-    path('api/',include('api.urls'))
+    path('api/',include('api.urls')),
+    path("__debug__/", include("debug_toolbar.urls")),
     
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

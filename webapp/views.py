@@ -5,18 +5,20 @@ from .models import Listing, Price_History
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from time import sleep
-from .finn_v3 import FinnScraper
+# from .finn_v3 import FinnScraper
 import csv
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from .filters import ListingFilter
 # Create your views here.
+from django.db.models import Prefetch
 
 
 @login_required(login_url='login')
 def home(request):
-    # Listing.objects.all().delete()
-    # Price_History.objects.all().delete()
-    listing = Listing.objects.all().order_by("last_updated")
+    # listing = Listing.objects.prefetch_related('history').order_by("last_updated")
+    listing = Listing.objects.prefetch_related(
+        Prefetch('history', queryset=Price_History.objects.order_by('-id'))
+    ).order_by("-id")
     myfilter = ListingFilter(request.GET,queryset=listing)
     listing = myfilter.qs
 
@@ -32,7 +34,6 @@ def home(request):
 
 
     page = data_paginator.get_page(page_num)
-    print(data_paginator.count)
     context = {
         "page": page,
         "count": data_paginator.count,
@@ -65,20 +66,20 @@ def details_redirect(request):
 
 @login_required(login_url='login')
 def details(request, code):
-    try:
-        scrape = FinnScraper()
-        scrape.scrape_single_listing(
-        "https://www.finn.no/boat/forsale/ad.html?finnkode={}".format(str(code)))
-    except:
-        pass
+    # try:
+    #     scrape = FinnScraper()
+    #     scrape.scrape_single_listing(
+    #     "https://www.finn.no/boat/forsale/ad.html?finnkode={}".format(str(code)))
+    # except:
+    #     pass
 
-    Details = Listing.objects.get(finn_code=code)
-    PriceHistory = Price_History.objects.filter(finn_code=code)
-    print(len(PriceHistory))
-    # print(Details)
+    Details = Listing.objects.prefetch_related('history').get(finn_code=code)
+    # PriceHistory = Price_History.objects.filter(finn_code=code)
+    # print(len(PriceHistory))
+    print(Details)
     context = {
         "Details": Details,
-        "PriceHistory": PriceHistory,
+        # "PriceHistory": PriceHistory,
     }
     return render(request, "details.html", context)
 
@@ -87,7 +88,7 @@ def delete_detail(request, code):
 
     Details = Listing.objects.get(finn_code=code)
     Details.delete()
-    PriceHistory = Price_History.objects.filter(finn_code=code)
+    PriceHistory = Price_History.objects.get(finn_code=code)
     PriceHistory.delete()
     # print(len(PriceHistory))
     # print(Details)

@@ -1,0 +1,35 @@
+{% extends 'base.htmtl' %}
+
+
+{% block main %}
+
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>TITLE</th>
+            <th>BRAND</th>
+            <th>MODEL</th>
+            <th>ORIGINAL PRICE</th>
+            <th>CURRENT PRICE</th>
+            <th>MODEL YEAR</th>
+            <th>LINK URL</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for listing in listings %}
+        <tr>
+            <td>{{ listing.title }}</td>
+            <td>{{ listing.brand }}</td>
+            <td>{{ listing.model }}</td>
+            <td>{{ listing.original_price }}</td>
+            <td>{{ listing.current_price_property|safe }}</td>
+            <td>{{ listing.model_year }}</td>
+            <td><a href="{{ listing.url }}">{{ listing.url }}</a></td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+
+{% endblock main %}
